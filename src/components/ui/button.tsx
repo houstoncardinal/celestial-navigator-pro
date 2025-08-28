@@ -18,6 +18,11 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        // Space Theme Variants
+        stellar: "bg-gradient-stellar text-primary-foreground hover:shadow-glow-stellar transition-all duration-300 border border-stellar/20",
+        cosmic: "bg-gradient-cosmic text-foreground hover:shadow-glow-cosmic transition-all duration-300 border border-cosmic/20",
+        nebula: "bg-gradient-nebula text-foreground hover:bg-opacity-80 transition-all duration-300 border border-nebula/30",
+        space: "bg-space/50 text-foreground border border-cosmic/40 hover:bg-space/70 hover:border-cosmic/60 transition-all duration-300"
       },
       size: {
         default: "h-10 px-4 py-2",

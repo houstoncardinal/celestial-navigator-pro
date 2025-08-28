@@ -61,7 +61,36 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Space Theme Colors
+				cosmic: {
+					purple: 'hsl(var(--cosmic-purple))',
+					blue: 'hsl(var(--cosmic-blue))',
+					DEFAULT: 'hsl(var(--cosmic-purple))'
+				},
+				stellar: {
+					gold: 'hsl(var(--stellar-gold))',
+					DEFAULT: 'hsl(var(--stellar-gold))'
+				},
+				nebula: {
+					violet: 'hsl(var(--nebula-violet))',
+					DEFAULT: 'hsl(var(--nebula-violet))'
+				},
+				space: {
+					deep: 'hsl(var(--deep-space))',
+					starfield: 'hsl(var(--starfield))',
+					DEFAULT: 'hsl(var(--deep-space))'
 				}
+			},
+			backgroundImage: {
+				'gradient-cosmic': 'var(--gradient-cosmic)',
+				'gradient-nebula': 'var(--gradient-nebula)',
+				'gradient-stellar': 'var(--gradient-stellar)'
+			},
+			boxShadow: {
+				'glow-cosmic': 'var(--glow-cosmic)',
+				'glow-stellar': 'var(--glow-stellar)',
+				'space': 'var(--shadow-space)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

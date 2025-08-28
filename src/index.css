@@ -8,33 +8,55 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Deep Space Theme */
+    --background: 228 25% 6%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 228 25% 8%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 228 25% 8%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 45 100% 70%;
+    --primary-foreground: 228 25% 6%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 259 47% 25%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 228 25% 12%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 259 47% 35%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 228 25% 18%;
+    --input: 228 25% 12%;
+    --ring: 45 100% 70%;
+
+    /* Custom Space Theme Colors */
+    --cosmic-purple: 259 47% 35%;
+    --cosmic-blue: 234 89% 74%;
+    --stellar-gold: 45 100% 70%;
+    --nebula-violet: 275 100% 75%;
+    --deep-space: 228 25% 6%;
+    --starfield: 228 25% 4%;
+    
+    /* Gradients */
+    --gradient-cosmic: linear-gradient(135deg, hsl(var(--cosmic-purple)), hsl(var(--cosmic-blue)));
+    --gradient-nebula: linear-gradient(45deg, hsl(var(--deep-space)), hsl(var(--cosmic-purple)) 50%, hsl(var(--nebula-violet)));
+    --gradient-stellar: linear-gradient(90deg, hsl(var(--stellar-gold)), hsl(45 100% 80%));
+    
+    /* Effects */
+    --glow-cosmic: 0 0 20px hsl(var(--cosmic-blue) / 0.3);
+    --glow-stellar: 0 0 30px hsl(var(--stellar-gold) / 0.4);
+    --shadow-space: 0 4px 20px hsl(var(--deep-space) / 0.8);
+    
+    /* Animations */
+    --transition-cosmic: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;
 
@@ -56,33 +78,38 @@ All colors MUST be HSL.
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    /* Enhanced Dark Space Theme */
+    --background: 228 25% 4%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 228 25% 6%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 228 25% 6%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 45 100% 75%;
+    --primary-foreground: 228 25% 4%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 259 47% 20%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 228 25% 8%;
+    --muted-foreground: 215 20% 70%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 259 47% 30%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 228 25% 15%;
+    --input: 228 25% 8%;
+    --ring: 45 100% 75%;
+
+    --starfield: 228 25% 2%;
+    --glow-cosmic: 0 0 25px hsl(var(--cosmic-blue) / 0.4);
+    --glow-stellar: 0 0 35px hsl(var(--stellar-gold) / 0.5);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
