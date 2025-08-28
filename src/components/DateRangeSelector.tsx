@@ -49,36 +49,36 @@ export function DateRangeSelector({
   };
 
   return (
-    <Card className="bg-card/50 backdrop-blur-sm border-cosmic/20">
+    <Card className="glass-effect border-cosmic/30 hover:border-stellar/40 transition-all duration-500">
       <CardHeader>
-        <CardTitle className="text-stellar font-bold flex items-center gap-2">
-          <CalendarDays className="w-5 h-5" />
+        <CardTitle className="text-stellar font-orbitron font-bold flex items-center gap-2">
+          <CalendarDays className="w-5 h-5 animate-pulse" />
           Date Range & Step
         </CardTitle>
-        <CardDescription className="text-muted-foreground">
+        <CardDescription className="text-muted-foreground font-space">
           Define the calculation period and time resolution
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="startDate" className="text-foreground font-medium">Start Date</Label>
+            <Label htmlFor="startDate" className="text-foreground font-medium font-space">Start Date</Label>
             <Input
               id="startDate"
               type="date"
               value={formatDateForInput(startDate)}
               onChange={handleStartDateChange}
-              className="bg-muted/30 border-cosmic/30 focus:border-stellar"
+              className="bg-muted/30 border-cosmic/30 focus:border-stellar hover:border-cosmic/50 transition-all duration-300"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="endDate" className="text-foreground font-medium">End Date</Label>
+            <Label htmlFor="endDate" className="text-foreground font-medium font-space">End Date</Label>
             <Input
               id="endDate"
               type="date"
               value={formatDateForInput(endDate)}
               onChange={handleEndDateChange}
-              className="bg-muted/30 border-cosmic/30 focus:border-stellar"
+              className="bg-muted/30 border-cosmic/30 focus:border-stellar hover:border-cosmic/50 transition-all duration-300"
             />
           </div>
         </div>

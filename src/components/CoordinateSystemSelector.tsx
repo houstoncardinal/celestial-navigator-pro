@@ -24,10 +24,10 @@ export function CoordinateSystemSelector({ selectedSystem, onSystemChange }: Coo
   };
 
   return (
-    <Card className="bg-card/50 backdrop-blur-sm border-cosmic/20">
+    <Card className="glass-effect border-cosmic/30 hover:border-stellar/40 transition-all duration-500">
       <CardHeader>
-        <CardTitle className="text-stellar font-bold">Coordinate System</CardTitle>
-        <CardDescription className="text-muted-foreground">
+        <CardTitle className="text-stellar font-orbitron font-bold">Coordinate System</CardTitle>
+        <CardDescription className="text-muted-foreground font-space">
           Choose the reference frame for planetary positions
         </CardDescription>
       </CardHeader>
@@ -40,12 +40,14 @@ export function CoordinateSystemSelector({ selectedSystem, onSystemChange }: Coo
               <Button
                 key={system.id}
                 variant={isSelected ? "stellar" : "space"}
-                className="h-auto p-4 flex flex-col items-start gap-2 relative"
+                className="h-auto p-4 flex flex-col items-start gap-2 relative hover:scale-105 transition-all duration-300 group"
                 onClick={() => onSystemChange(system.id)}
               >
                 <div className="flex items-center gap-2 w-full">
-                  {getIcon(system.id)}
-                  <span className="font-semibold">{system.name}</span>
+                  <div className="group-hover:animate-float transition-all duration-300">
+                    {getIcon(system.id)}
+                  </div>
+                  <span className="font-semibold font-space">{system.name}</span>
                   {isSelected && (
                     <Badge variant="secondary" className="ml-auto">
                       Active
