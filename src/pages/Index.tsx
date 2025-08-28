@@ -5,12 +5,16 @@ import { DateRangeSelector } from '@/components/DateRangeSelector';
 import { CoordinateSystemSelector } from '@/components/CoordinateSystemSelector';
 import { ResultsTable } from '@/components/ResultsTable';
 import { EphemerisChart } from '@/components/EphemerisChart';
+import { AdvancedAstronomicalChart } from '@/components/AdvancedAstronomicalChart';
+import { AstronomicalDashboard } from '@/components/AstronomicalDashboard';
+import { DataValidationPanel } from '@/components/DataValidationPanel';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { generateEphemeris, type PlanetPosition, type AspectData } from '@/utils/astronomy';
-import { Calculator, Sparkles, Download, BarChart3, Orbit, Star } from 'lucide-react';
+import { Calculator, Sparkles, Download, BarChart3, Orbit, Star, Telescope, Globe, Database, Zap, Menu, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Index = () => {
@@ -25,6 +29,8 @@ const Index = () => {
   const [coordinateSystem, setCoordinateSystem] = useState('geocentric');
   const [isCalculating, setIsCalculating] = useState(false);
   const [results, setResults] = useState<{ positions: PlanetPosition[], aspects: AspectData[] } | null>(null);
+  const [activeMainTab, setActiveMainTab] = useState('calculator');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handlePlanetToggle = (planetName: string) => {
     setSelectedPlanets(prev => 
@@ -44,15 +50,31 @@ const Index = () => {
 
     setIsCalculating(true);
     try {
-      const ephemeris = generateEphemeris(
-        selectedPlanets,
-        startDate,
-        endDate,
-        stepDays,
-        coordinateSystem
-      );
+      // Add timeout to prevent UI freezing
+      const ephemeris = await new Promise<{ positions: PlanetPosition[]; aspects: AspectData[] }>((resolve, reject) => {
+        const timeoutId = setTimeout(() => {
+          reject(new Error('Calculation timeout - please reduce date range or step size'));
+        }, 30000); // 30 second timeout
+        
+        try {
+          const result = generateEphemeris(
+            selectedPlanets,
+            startDate,
+            endDate,
+            stepDays,
+            coordinateSystem,
+            true, // include aspects
+            5 // aspect orb
+          );
+          clearTimeout(timeoutId);
+          resolve(result);
+        } catch (error) {
+          clearTimeout(timeoutId);
+          reject(error);
+        }
+      });
       
-      // Mercury baseline validation
+      // Mercury baseline validation (original calculation)
       const mercuryPositions = ephemeris.positions.filter(pos => pos.planet === 'Mercury');
       if (mercuryPositions.length > 0 && selectedPlanets.includes('Mercury')) {
         const avgMercuryLongitude = mercuryPositions.reduce((sum, pos) => sum + pos.longitude, 0) / mercuryPositions.length;
@@ -65,7 +87,8 @@ const Index = () => {
       
       setResults(ephemeris);
     } catch (error) {
-      toast.error('Calculation failed. Please check your parameters.');
+      const errorMessage = error instanceof Error ? error.message : 'Calculation failed. Please check your parameters.';
+      toast.error(errorMessage);
       console.error('Calculation error:', error);
     } finally {
       setIsCalculating(false);
@@ -74,225 +97,426 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Enhanced Background with Starfield */}
+      {/* Enhanced Futuristic Background */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
         style={{ backgroundImage: `url(${spaceBackground})` }}
       />
-      <div className="absolute inset-0 bg-gradient-nebula opacity-70" />
-      <div className="absolute inset-0 starfield-bg opacity-30" />
+      <div className="absolute inset-0 bg-gradient-deep opacity-80" />
+      <div className="absolute inset-0 starfield-futuristic opacity-40" />
+      <div className="absolute inset-0 grid-futuristic opacity-20" />
       
       {/* Content */}
       <div className="relative z-10">
-        {/* Enhanced Header */}
-        <header className="border-b border-cosmic/30 bg-card/30 backdrop-blur-md glass-effect animate-slide-up">
-          <div className="container mx-auto px-4 py-6">
+        {/* Enhanced Futuristic Header */}
+        <header className="border-b border-neon-blue/20 bg-card/20 backdrop-blur-xl glass-futuristic">
+          <div className="container-responsive py-4 sm:py-6">
             <div className="flex items-center justify-between">
-              <div className="animate-fade-in">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-gradient-stellar rounded-full animate-rotate-slow">
-                    <Orbit className="w-8 h-8 text-primary-foreground" />
+              {/* Logo and Title */}
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="relative">
+                  <div className="p-2 sm:p-3 bg-gradient-neon rounded-full animate-neon-pulse">
+                    <Orbit className="w-6 h-6 sm:w-8 sm:h-8 text-primary-foreground" />
                   </div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-stellar text-glow">
-                    Planetary Longitude Calculator Pro
-                  </h1>
+                  <div className="absolute -inset-1 bg-gradient-neon rounded-full opacity-20 animate-neon-glow blur-sm" />
                 </div>
-                <p className="text-muted-foreground mt-2 font-space">
-                  Professional astronomical ephemeris calculator for precise celestial mechanics
-                </p>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-futuristic font-orbitron">
+                    Celestial Navigator Pro
+                  </h1>
+                  <p className="text-muted-foreground mt-1 text-sm sm:text-base font-space max-w-md">
+                    Professional astronomical ephemeris calculator with advanced algorithms and real-time data
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-3 animate-fade-in">
-                <Badge variant="outline" className="border-stellar/40 text-stellar hover-glow">
-                  <Star className="w-3 h-3 mr-1 animate-float" />
+
+              {/* Desktop Badges */}
+              <div className="hidden lg:flex items-center gap-3">
+                <Badge className="badge-futuristic hover-neon">
+                  <Star className="w-3 h-3 mr-1" />
                   Astronomy Grade
                 </Badge>
-                <Badge variant="outline" className="border-cosmic/40 text-cosmic animate-glow-pulse">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  Mercury Baseline
+                <Badge className="badge-futuristic hover-neon">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Real-time Data
+                </Badge>
+                <Badge className="badge-futuristic hover-neon">
+                  <Database className="w-3 h-3 mr-1" />
+                  Advanced Algorithms
                 </Badge>
               </div>
+
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="lg:hidden p-2 hover:bg-neon-blue/10"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </Button>
             </div>
+
+            {/* Mobile Badges */}
+            {isMobileMenuOpen && (
+              <div className="lg:hidden mt-4 flex flex-wrap gap-2">
+                <Badge className="badge-futuristic text-xs">
+                  <Star className="w-3 h-3 mr-1" />
+                  Astronomy Grade
+                </Badge>
+                <Badge className="badge-futuristic text-xs">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Real-time Data
+                </Badge>
+                <Badge className="badge-futuristic text-xs">
+                  <Database className="w-3 h-3 mr-1" />
+                  Advanced Algorithms
+                </Badge>
+              </div>
+            )}
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Column - Enhanced Configuration */}
-            <div className="space-y-6 animate-slide-up">
-              <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
-                <PlanetSelector
-                  selectedPlanets={selectedPlanets}
-                  onPlanetToggle={handlePlanetToggle}
-                />
-              </div>
-              
-              <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                <DateRangeSelector
-                  startDate={startDate}
-                  endDate={endDate}
-                  onStartDateChange={setStartDate}
-                  onEndDateChange={setEndDate}
-                  stepDays={stepDays}
-                  onStepDaysChange={setStepDays}
-                />
-              </div>
-              
-              <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
-                <CoordinateSystemSelector
-                  selectedSystem={coordinateSystem}
-                  onSystemChange={setCoordinateSystem}
-                />
-              </div>
+        <main className="container-responsive py-6 sm:py-8">
+          {/* Main Navigation Tabs */}
+          <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="w-full mb-8">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 h-auto p-1 bg-muted/20 backdrop-blur-sm border border-neon-blue/20">
+              <TabsTrigger 
+                value="calculator" 
+                className="flex items-center gap-2 p-3 data-[state=active]:bg-neon-blue/20 data-[state=active]:text-neon-blue data-[state=active]:border-neon-blue/30 transition-all duration-300"
+              >
+                <Calculator className="w-4 h-4" />
+                <span className="hidden sm:inline">Calculator</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="dashboard" 
+                className="flex items-center gap-2 p-3 data-[state=active]:bg-neon-cyan/20 data-[state=active]:text-neon-cyan data-[state=active]:border-neon-cyan/30 transition-all duration-300"
+              >
+                <BarChart3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Dashboard</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="visualization" 
+                className="flex items-center gap-2 p-3 data-[state=active]:bg-neon-purple/20 data-[state=active]:text-neon-purple data-[state=active]:border-neon-purple/30 transition-all duration-300"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline">Visualization</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="analysis" 
+                className="flex items-center gap-2 p-3 data-[state=active]:bg-neon-green/20 data-[state=active]:text-neon-green data-[state=active]:border-neon-green/30 transition-all duration-300"
+              >
+                <Telescope className="w-4 h-4" />
+                <span className="hidden sm:inline">Analysis</span>
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Calculator Tab */}
+            <TabsContent value="calculator" className="space-y-6 sm:space-y-8 mt-6">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 sm:gap-8">
+                {/* Left Column - Enhanced Configuration */}
+                <div className="space-y-6 sm:space-y-8">
+                  <div className="animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                    <PlanetSelector
+                      selectedPlanets={selectedPlanets}
+                      onPlanetToggle={handlePlanetToggle}
+                    />
+                  </div>
+                  
+                  <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+                    <DateRangeSelector
+                      startDate={startDate}
+                      endDate={endDate}
+                      onStartDateChange={setStartDate}
+                      onEndDateChange={setEndDate}
+                      stepDays={stepDays}
+                      onStepDaysChange={setStepDays}
+                    />
+                  </div>
+                  
+                  <div className="animate-fade-in" style={{ animationDelay: '0.3s' }}>
+                    <CoordinateSystemSelector
+                      selectedSystem={coordinateSystem}
+                      onSystemChange={setCoordinateSystem}
+                    />
+                  </div>
 
-              {/* Enhanced Calculate Button */}
-              <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
-                <Card className="glass-effect border-cosmic/30 hover:border-stellar/50 transition-all duration-500">
-                  <CardContent className="pt-6">
-                    <Button
-                      variant="stellar"
-                      size="lg"
-                      onClick={handleCalculate}
-                      disabled={isCalculating || selectedPlanets.length === 0}
-                      className="w-full font-bold text-lg h-14 relative overflow-hidden group"
-                    >
-                      {isCalculating ? (
-                        <>
-                          <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin mr-3" />
-                          <span className="font-orbitron">Calculating Ephemeris...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Calculator className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform duration-300" />
-                          <span className="font-orbitron">Calculate Planetary Positions</span>
-                        </>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                    </Button>
-                    {selectedPlanets.length === 0 && (
-                      <p className="text-sm text-muted-foreground text-center mt-3 font-space animate-pulse">
-                        Select planets to begin calculation
-                      </p>
-                    )}
-                    {selectedPlanets.includes('Mercury') && (
-                      <div className="mt-3 p-2 bg-stellar/10 rounded-lg border border-stellar/20">
-                        <p className="text-xs text-stellar font-space text-center">
-                          ✓ Mercury baseline calculations enabled for {coordinateSystem} mode
-                        </p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Right Column - Enhanced Results */}
-            <div className="space-y-6 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-              {results ? (
-                <>
-                  {/* Enhanced Summary Card */}
-                  <Card className="glass-effect border-cosmic/30 hover:border-stellar/40 transition-all duration-500 animate-scale-in">
-                    <CardHeader>
-                      <CardTitle className="text-stellar flex items-center gap-2 font-orbitron">
-                        <BarChart3 className="w-5 h-5 animate-pulse" />
-                        Calculation Results
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center p-4 bg-muted/20 rounded-lg border border-stellar/20 hover:border-stellar/40 transition-all duration-300 group">
-                          <div className="text-3xl font-bold text-stellar animate-glow-pulse font-orbitron group-hover:scale-110 transition-transform duration-300">
-                            {results.positions.length}
-                          </div>
-                          <div className="text-sm text-muted-foreground font-space">Position Data Points</div>
-                        </div>
-                        <div className="text-center p-4 bg-muted/20 rounded-lg border border-nebula/20 hover:border-nebula/40 transition-all duration-300 group">
-                          <div className="text-3xl font-bold text-nebula font-orbitron group-hover:scale-110 transition-transform duration-300">
-                            {results.aspects.length}
-                          </div>
-                          <div className="text-sm text-muted-foreground font-space">Planetary Aspects</div>
-                        </div>
-                      </div>
-                      
-                      <Separator className="my-4 bg-cosmic/30" />
-                      
-                      <div className="flex gap-2">
-                        <Button variant="space" size="sm" className="flex-1 hover-glow">
-                          <Download className="w-4 h-4 mr-2" />
-                          Export CSV
+                  {/* Enhanced Calculate Button */}
+                  <div className="animate-fade-in" style={{ animationDelay: '0.4s' }}>
+                    <Card className="card-futuristic border-neon-blue/30 hover:border-neon-blue/50">
+                      <CardContent className="p-6">
+                        <Button
+                          onClick={handleCalculate}
+                          disabled={isCalculating || selectedPlanets.length === 0}
+                          className="w-full font-bold text-lg h-16 sm:h-20 relative overflow-hidden group btn-futuristic"
+                        >
+                          {isCalculating ? (
+                            <>
+                              <div className="w-6 h-6 border-2 border-current border-t-transparent rounded-full animate-spin mr-3" />
+                              <span className="font-orbitron">Calculating Ephemeris...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Calculator className="w-6 h-6 sm:w-8 sm:h-8 mr-3 group-hover:rotate-12 transition-transform duration-300" />
+                              <span className="font-orbitron">Calculate Planetary Positions</span>
+                            </>
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                         </Button>
-                        <Button variant="space" size="sm" className="flex-1 hover-glow">
-                          <Download className="w-4 h-4 mr-2" />
-                          Export PDF
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                        {selectedPlanets.length === 0 && (
+                          <p className="text-sm text-muted-foreground text-center mt-4 font-space animate-pulse">
+                            Select planets to begin calculation
+                          </p>
+                        )}
+                        {selectedPlanets.length > 0 && (
+                          <div className="mt-4 p-3 bg-neon-blue/10 rounded-lg border border-neon-blue/20">
+                            <p className="text-xs text-neon-blue font-space text-center">
+                              {selectedPlanets.includes('Mercury') 
+                                ? `✓ Mercury baseline calculations enabled for ${coordinateSystem} mode`
+                                : `${selectedPlanets.length} planet(s) selected for ${coordinateSystem} mode`
+                              }
+                            </p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
 
-                  {/* Enhanced Recent Aspects */}
-                  {results.aspects.length > 0 && (
-                    <Card className="glass-effect border-cosmic/30 animate-fade-in">
-                      <CardHeader>
-                        <CardTitle className="text-stellar font-orbitron">Recent Aspects</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3 max-h-60 overflow-y-auto">
-                          {results.aspects.slice(0, 10).map((aspect, index) => (
-                            <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg border border-cosmic/20 hover:border-nebula/40 transition-all duration-300 group animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                              <div className="flex items-center gap-3">
-                                <Badge variant="outline" className="border-nebula/40 hover-glow group-hover:scale-105 transition-transform duration-300">
-                                  {aspect.aspect}
-                                </Badge>
-                                <span className="text-sm font-space group-hover:text-stellar transition-colors duration-300">
-                                  {aspect.planet1} - {aspect.planet2}
-                                </span>
+                {/* Right Column - Enhanced Results */}
+                <div className="space-y-6 sm:space-y-8">
+                  {results ? (
+                    <>
+                      {/* Enhanced Summary Card */}
+                      <Card className="card-futuristic border-neon-blue/30 hover:border-neon-blue/40 animate-scale-in">
+                        <CardHeader>
+                          <CardTitle className="text-neon-blue flex items-center gap-2 font-orbitron">
+                            <BarChart3 className="w-5 h-5 animate-pulse" />
+                            Calculation Results
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="text-center p-4 bg-muted/20 rounded-lg border border-neon-blue/20 hover:border-neon-blue/40 transition-all duration-300 group">
+                              <div className="text-3xl font-bold text-neon-blue animate-neon-pulse font-orbitron group-hover:scale-110 transition-transform duration-300">
+                                {results.positions.length}
                               </div>
-                              <div className="text-xs text-muted-foreground font-space">
-                                {aspect.date.toLocaleDateString()}
-                              </div>
+                              <div className="text-sm text-muted-foreground font-space">Position Data Points</div>
                             </div>
-                          ))}
+                            <div className="text-center p-4 bg-muted/20 rounded-lg border border-neon-cyan/20 hover:border-neon-cyan/40 transition-all duration-300 group">
+                              <div className="text-3xl font-bold text-neon-cyan animate-neon-pulse font-orbitron group-hover:scale-110 transition-transform duration-300">
+                                {results.aspects.length}
+                              </div>
+                              <div className="text-sm text-muted-foreground font-space">Planetary Aspects</div>
+                            </div>
+                          </div>
+                          
+                          <Separator className="my-6 bg-neon-blue/30" />
+                          
+                          <div className="flex flex-col sm:flex-row gap-3">
+                            <Button variant="outline" size="sm" className="flex-1 hover-neon border-neon-blue/30 text-neon-blue">
+                              <Download className="w-4 h-4 mr-2" />
+                              Export CSV
+                            </Button>
+                            <Button variant="outline" size="sm" className="flex-1 hover-neon border-neon-cyan/30 text-neon-cyan">
+                              <Download className="w-4 h-4 mr-2" />
+                              Export PDF
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Enhanced Recent Aspects */}
+                      {results.aspects.length > 0 && (
+                        <Card className="card-futuristic border-neon-purple/30 animate-fade-in">
+                          <CardHeader>
+                            <CardTitle className="text-neon-purple font-orbitron">Recent Aspects</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-3 max-h-60 overflow-y-auto">
+                              {results.aspects.slice(0, 10).map((aspect, index) => (
+                                <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg border border-neon-purple/20 hover:border-neon-purple/40 transition-all duration-300 group animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                                  <div className="flex items-center gap-3">
+                                    <Badge className="badge-futuristic border-neon-purple/40 hover-neon group-hover:scale-105 transition-transform duration-300">
+                                      {aspect.aspect}
+                                    </Badge>
+                                    <span className="text-sm font-space group-hover:text-neon-purple transition-colors duration-300">
+                                      {aspect.planet1} - {aspect.planet2}
+                                    </span>
+                                  </div>
+                                  <div className="text-xs text-muted-foreground font-space">
+                                    {aspect.date.toLocaleDateString()}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </>
+                  ) : (
+                    /* Enhanced Placeholder */
+                    <Card className="card-futuristic border-neon-blue/20 animate-fade-in">
+                      <CardContent className="py-16 sm:py-20">
+                        <div className="text-center space-y-6">
+                          <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-neon rounded-full flex items-center justify-center animate-neon-float">
+                            <Calculator className="w-10 h-10 sm:w-12 sm:h-12 text-primary-foreground" />
+                          </div>
+                          <div className="space-y-4">
+                            <h3 className="text-xl sm:text-2xl font-bold text-foreground font-orbitron">
+                              Ready for Astronomical Calculation
+                            </h3>
+                            <p className="text-muted-foreground font-space max-w-md mx-auto text-sm sm:text-base">
+                              Configure your celestial parameters and generate precise planetary ephemeris data with professional-grade accuracy
+                            </p>
+                            <div className="flex flex-wrap justify-center gap-2 mt-6">
+                              <Badge className="badge-futuristic border-neon-blue/30 text-neon-blue">
+                                ☿ Mercury Baseline
+                              </Badge>
+                              <Badge className="badge-futuristic border-neon-cyan/30 text-neon-cyan">
+                                🌍 Geocentric Mode
+                              </Badge>
+                              <Badge className="badge-futuristic border-neon-purple/30 text-neon-purple">
+                                ☉ Heliocentric Mode
+                              </Badge>
+                            </div>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
                   )}
-                  {/* Enhanced Results with Chart and Table */}
+                </div>
+              </div>
+
+              {/* Results Display */}
+              {results && (
+                <div className="space-y-6 sm:space-y-8">
                   <EphemerisChart positions={results.positions} aspects={results.aspects} selectedPlanets={selectedPlanets} />
                   <ResultsTable positions={results.positions} aspects={results.aspects} />
-                </>
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Dashboard Tab */}
+            <TabsContent value="dashboard" className="space-y-6 sm:space-y-8 mt-6">
+              {results ? (
+                <AstronomicalDashboard 
+                  positions={results.positions}
+                  aspects={results.aspects}
+                  selectedPlanets={selectedPlanets}
+                />
               ) : (
-                /* Enhanced Placeholder */
-                <Card className="glass-effect border-cosmic/20 animate-fade-in">
-                  <CardContent className="py-12">
+                <Card className="card-futuristic border-neon-cyan/20 animate-fade-in">
+                  <CardContent className="py-16 sm:py-20">
                     <div className="text-center space-y-6">
-                      <div className="w-20 h-20 mx-auto bg-gradient-cosmic rounded-full flex items-center justify-center animate-float">
-                        <Calculator className="w-10 h-10 text-foreground" />
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-neon rounded-full flex items-center justify-center animate-neon-float">
+                        <BarChart3 className="w-10 h-10 sm:w-12 sm:h-12 text-primary-foreground" />
                       </div>
-                      <div className="space-y-3">
-                        <h3 className="text-xl font-bold text-foreground font-orbitron">
-                          Ready for Astronomical Calculation
+                      <div className="space-y-4">
+                        <h3 className="text-xl sm:text-2xl font-bold text-foreground font-orbitron">
+                          Dashboard Requires Data
                         </h3>
-                        <p className="text-muted-foreground font-space max-w-md mx-auto">
-                          Configure your celestial parameters and generate precise planetary ephemeris data with professional-grade accuracy
+                        <p className="text-muted-foreground font-space max-w-md mx-auto text-sm sm:text-base">
+                          Generate planetary ephemeris data first to access the comprehensive astronomical dashboard
                         </p>
-                        <div className="flex justify-center gap-2 mt-4">
-                          <Badge variant="outline" className="border-stellar/30 text-stellar/70">
-                            ☿ Mercury Baseline
-                          </Badge>
-                          <Badge variant="outline" className="border-cosmic/30 text-cosmic/70">
-                            🌍 Geocentric Mode
-                          </Badge>
-                          <Badge variant="outline" className="border-nebula/30 text-nebula/70">
-                            ☉ Heliocentric Mode
-                          </Badge>
-                        </div>
+                        <Button 
+                          onClick={() => setActiveMainTab('calculator')}
+                          variant="outline"
+                          className="mt-6 btn-futuristic"
+                        >
+                          Go to Calculator
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               )}
-            </div>
-          </div>
+            </TabsContent>
+
+            {/* Visualization Tab */}
+            <TabsContent value="visualization" className="space-y-6 sm:space-y-8 mt-6">
+              {results ? (
+                <AdvancedAstronomicalChart 
+                  positions={results.positions}
+                  aspects={results.aspects}
+                  selectedPlanets={selectedPlanets}
+                />
+              ) : (
+                <Card className="card-futuristic border-neon-purple/20 animate-fade-in">
+                  <CardContent className="py-16 sm:py-20">
+                    <div className="text-center space-y-6">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-neon rounded-full flex items-center justify-center animate-neon-float">
+                        <Globe className="w-10 h-10 sm:w-12 sm:h-12 text-primary-foreground" />
+                      </div>
+                      <div className="space-y-4">
+                        <h3 className="text-xl sm:text-2xl font-bold text-foreground font-orbitron">
+                          Visualization Requires Data
+                        </h3>
+                        <p className="text-muted-foreground font-space max-w-md mx-auto text-sm sm:text-base">
+                          Generate planetary ephemeris data first to access the advanced 3D visualizations
+                        </p>
+                        <Button 
+                          onClick={() => setActiveMainTab('calculator')}
+                          variant="outline"
+                          className="mt-6 btn-futuristic"
+                        >
+                          Go to Calculator
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            {/* Analysis Tab */}
+            <TabsContent value="analysis" className="space-y-6 sm:space-y-8 mt-6">
+              {results ? (
+                <div className="space-y-6 sm:space-y-8">
+                  {/* Data Validation Panel */}
+                  <DataValidationPanel calculatedPositions={results.positions} />
+                  
+                  <Card className="card-futuristic border-neon-green/30">
+                    <CardHeader>
+                      <CardTitle className="text-neon-green">Advanced Astronomical Analysis</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground text-sm sm:text-base">
+                        Advanced analysis features including retrogrades, stations, phases, and more will be displayed here.
+                        This tab provides deep insights into celestial mechanics and astronomical phenomena.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              ) : (
+                <Card className="card-futuristic border-neon-green/20 animate-fade-in">
+                  <CardContent className="py-16 sm:py-20">
+                    <div className="text-center space-y-6">
+                      <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto bg-gradient-neon rounded-full flex items-center justify-center animate-neon-float">
+                        <Telescope className="w-10 h-10 sm:w-12 sm:h-12 text-primary-foreground" />
+                      </div>
+                      <div className="space-y-4">
+                        <h3 className="text-xl sm:text-2xl font-bold text-foreground font-orbitron">
+                          Analysis Requires Data
+                        </h3>
+                        <p className="text-muted-foreground font-space max-w-md mx-auto text-sm sm:text-base">
+                          Generate planetary ephemeris data first to access the advanced astronomical analysis tools
+                        </p>
+                        <Button 
+                          onClick={() => setActiveMainTab('calculator')}
+                          variant="outline"
+                          className="mt-6 btn-futuristic"
+                        >
+                          Go to Calculator
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
         </main>
       </div>
     </div>

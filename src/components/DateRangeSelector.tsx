@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { CalendarDays, Clock } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Slider } from '@/components/ui/slider';
+import { Calendar, Clock, CalendarDays } from 'lucide-react';
 
 interface DateRangeSelectorProps {
   startDate: Date;
@@ -11,124 +11,186 @@ interface DateRangeSelectorProps {
   onStartDateChange: (date: Date) => void;
   onEndDateChange: (date: Date) => void;
   stepDays: number;
-  onStepDaysChange: (step: number) => void;
+  onStepDaysChange: (days: number) => void;
 }
 
-export function DateRangeSelector({
+export const DateRangeSelector: React.FC<DateRangeSelectorProps> = ({
   startDate,
   endDate,
   onStartDateChange,
   onEndDateChange,
   stepDays,
   onStepDaysChange
-}: DateRangeSelectorProps) {
-  const formatDateForInput = (date: Date) => {
-    return date.toISOString().split('T')[0];
-  };
-
+}) => {
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = new Date(e.target.value);
-    if (!isNaN(newDate.getTime())) {
+    if (newDate <= endDate) {
       onStartDateChange(newDate);
     }
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = new Date(e.target.value);
-    if (!isNaN(newDate.getTime())) {
+    if (newDate >= startDate) {
       onEndDateChange(newDate);
     }
   };
 
-  const setQuickRange = (days: number) => {
-    const now = new Date();
-    const future = new Date(now);
-    future.setDate(now.getDate() + days);
-    onStartDateChange(now);
-    onEndDateChange(future);
+  const calculateDuration = () => {
+    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  const calculateDataPoints = () => {
+    const duration = calculateDuration();
+    return Math.floor(duration / stepDays) + 1;
   };
 
   return (
-    <Card className="glass-effect border-cosmic/30 hover:border-stellar/40 transition-all duration-500">
+    <Card className="card-futuristic border-neon-cyan/30 hover:border-neon-cyan/40">
       <CardHeader>
-        <CardTitle className="text-stellar font-orbitron font-bold flex items-center gap-2">
-          <CalendarDays className="w-5 h-5 animate-pulse" />
+        <CardTitle className="text-neon-cyan flex items-center gap-2 font-orbitron">
+          <Calendar className="w-5 h-5" />
           Date Range & Step
         </CardTitle>
-        <CardDescription className="text-muted-foreground font-space">
-          Define the calculation period and time resolution
-        </CardDescription>
+        <p className="text-muted-foreground text-sm sm:text-base">
+          Configure calculation period and time resolution
+        </p>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Date Range Selection */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="startDate" className="text-foreground font-medium font-space">Start Date</Label>
-            <Input
-              id="startDate"
-              type="date"
-              value={formatDateForInput(startDate)}
-              onChange={handleStartDateChange}
-              className="bg-muted/30 border-cosmic/30 focus:border-stellar hover:border-cosmic/50 transition-all duration-300"
-            />
+            <Label htmlFor="start-date" className="text-sm font-medium text-neon-cyan">
+              Start Date
+            </Label>
+            <div className="relative">
+              <Input
+                id="start-date"
+                type="date"
+                value={startDate.toISOString().split('T')[0]}
+                onChange={handleStartDateChange}
+                className="input-futuristic border-neon-cyan/30 focus:border-neon-cyan"
+                min={new Date('1900-01-01').toISOString().split('T')[0]}
+                max={endDate.toISOString().split('T')[0]}
+              />
+              <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neon-cyan/50" />
+            </div>
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="endDate" className="text-foreground font-medium font-space">End Date</Label>
-            <Input
-              id="endDate"
-              type="date"
-              value={formatDateForInput(endDate)}
-              onChange={handleEndDateChange}
-              className="bg-muted/30 border-cosmic/30 focus:border-stellar hover:border-cosmic/50 transition-all duration-300"
-            />
+            <Label htmlFor="end-date" className="text-sm font-medium text-neon-cyan">
+              End Date
+            </Label>
+            <div className="relative">
+              <Input
+                id="end-date"
+                type="date"
+                value={endDate.toISOString().split('T')[0]}
+                onChange={handleEndDateChange}
+                className="input-futuristic border-neon-cyan/30 focus:border-neon-cyan"
+                min={startDate.toISOString().split('T')[0]}
+                max={new Date('2100-12-31').toISOString().split('T')[0]}
+              />
+              <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neon-cyan/50" />
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="stepDays" className="text-foreground font-medium flex items-center gap-2">
-            <Clock className="w-4 h-4" />
-            Time Step (days)
-          </Label>
-          <Input
-            id="stepDays"
-            type="number"
-            min="1"
-            max="365"
-            value={stepDays}
-            onChange={(e) => onStepDaysChange(Math.max(1, parseInt(e.target.value) || 1))}
-            className="bg-muted/30 border-cosmic/30 focus:border-stellar"
+        {/* Step Days Selection */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm font-medium text-neon-cyan flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Time Step: {stepDays} day{stepDays !== 1 ? 's' : ''}
+            </Label>
+            <div className="text-xs text-muted-foreground bg-muted/20 px-2 py-1 rounded">
+              {calculateDataPoints()} data points
+            </div>
+          </div>
+          
+          <Slider
+            value={[stepDays]}
+            onValueChange={([value]) => onStepDaysChange(value)}
+            min={1}
+            max={30}
+            step={1}
+            className="w-full"
           />
-          <p className="text-xs text-muted-foreground">
-            Smaller steps provide more precise data but longer calculation time
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          <Label className="text-foreground font-medium">Quick Ranges</Label>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="space" size="sm" onClick={() => setQuickRange(7)}>
-              1 Week
-            </Button>
-            <Button variant="space" size="sm" onClick={() => setQuickRange(30)}>
-              1 Month
-            </Button>
-            <Button variant="space" size="sm" onClick={() => setQuickRange(90)}>
-              3 Months
-            </Button>
-            <Button variant="space" size="sm" onClick={() => setQuickRange(365)}>
-              1 Year
-            </Button>
+          
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Daily (1 day)</span>
+            <span>Weekly (7 days)</span>
+            <span>Monthly (30 days)</span>
           </div>
         </div>
 
-        <div className="p-3 bg-muted/20 rounded-lg border border-cosmic/20">
-          <p className="text-sm text-muted-foreground">
-            <strong>Duration:</strong> {Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))} days
-          </p>
-          <p className="text-sm text-muted-foreground">
-            <strong>Data points:</strong> {Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24 * stepDays))}
-          </p>
+        {/* Summary Information */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-muted/20 rounded-lg border border-neon-cyan/20">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-neon-cyan font-orbitron">
+              {calculateDuration()}
+            </div>
+            <div className="text-xs text-muted-foreground font-space">Total Days</div>
+          </div>
+          
+          <div className="text-center">
+            <div className="text-2xl font-bold text-neon-cyan font-orbitron">
+              {stepDays}
+            </div>
+            <div className="text-xs text-muted-foreground font-space">Step Size</div>
+          </div>
+          
+          <div className="text-center">
+            <div className="text-2xl font-bold text-neon-cyan font-orbitron">
+              {calculateDataPoints()}
+            </div>
+            <div className="text-xs text-muted-foreground font-space">Data Points</div>
+          </div>
+        </div>
+
+        {/* Quick Presets */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium text-neon-cyan flex items-center gap-2">
+            <CalendarDays className="w-4 h-4" />
+            Quick Presets
+          </Label>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { label: '1 Week', days: 7, step: 1 },
+              { label: '1 Month', days: 30, step: 1 },
+              { label: '3 Months', days: 90, step: 3 },
+              { label: '1 Year', days: 365, step: 7 }
+            ].map((preset) => (
+              <button
+                key={preset.label}
+                onClick={() => {
+                  const newEndDate = new Date(startDate);
+                  newEndDate.setDate(startDate.getDate() + preset.days);
+                  onEndDateChange(newEndDate);
+                  onStepDaysChange(preset.step);
+                }}
+                className="px-3 py-2 text-xs font-medium rounded-lg border border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/10 hover:border-neon-cyan/50 transition-all duration-300"
+              >
+                {preset.label}
+              </button>
+            ))}
+            
+            {/* Reference Data Preset */}
+            <button
+              onClick={() => {
+                onStartDateChange(new Date('2013-11-07'));
+                onEndDateChange(new Date('2014-02-03'));
+                onStepDaysChange(1);
+              }}
+              className="px-3 py-2 text-xs font-medium rounded-lg border border-neon-orange/30 text-neon-orange hover:bg-neon-orange/10 hover:border-neon-orange/50 transition-all duration-300"
+            >
+              Reference Data (2013-2014)
+            </button>
+          </div>
         </div>
       </CardContent>
     </Card>
   );
-}
+};

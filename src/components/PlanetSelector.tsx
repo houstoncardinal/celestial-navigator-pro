@@ -1,77 +1,140 @@
-import { useState } from 'react';
-import { planets, type PlanetData } from '@/utils/astronomy';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { planets } from '@/utils/astronomy';
 
 interface PlanetSelectorProps {
   selectedPlanets: string[];
   onPlanetToggle: (planetName: string) => void;
-  maxSelection?: number;
 }
 
-export function PlanetSelector({ selectedPlanets, onPlanetToggle, maxSelection = 3 }: PlanetSelectorProps) {
+export const PlanetSelector: React.FC<PlanetSelectorProps> = ({
+  selectedPlanets,
+  onPlanetToggle
+}) => {
   return (
-    <Card className="glass-effect border-cosmic/30 hover:border-stellar/40 transition-all duration-500 animate-scale-in">
+    <Card className="card-futuristic border-neon-blue/30 hover:border-neon-blue/40">
       <CardHeader>
-        <CardTitle className="text-stellar font-orbitron font-bold">Select Planets</CardTitle>
-        <CardDescription className="text-muted-foreground font-space">
-          Choose up to {maxSelection} celestial bodies for calculation
-        </CardDescription>
+        <CardTitle className="text-neon-blue flex items-center gap-2 font-orbitron">
+          <span className="text-2xl">☿</span>
+          Planet Selection
+        </CardTitle>
+        <p className="text-muted-foreground text-sm sm:text-base">
+          Select up to 3 planets for calculation (Mercury recommended for baseline)
+        </p>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {planets.map((planet, index) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          {planets.map((planet) => {
             const isSelected = selectedPlanets.includes(planet.name);
-            const canSelect = !isSelected && selectedPlanets.length < maxSelection;
+            const isMercury = planet.name === 'Mercury';
             
             return (
-              <Button
+              <button
                 key={planet.name}
-                variant={isSelected ? "stellar" : "space"}
-                className={`h-auto p-4 flex flex-col items-center gap-2 relative group animate-fade-in hover:scale-105 transition-all duration-300 ${
-                  !canSelect && !isSelected ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => canSelect || isSelected ? onPlanetToggle(planet.name) : null}
-                disabled={!canSelect && !isSelected}
+                onClick={() => onPlanetToggle(planet.name)}
+                disabled={!isSelected && selectedPlanets.length >= 3}
+                className={`
+                  relative group p-3 sm:p-4 rounded-xl border transition-all duration-300
+                  ${isSelected 
+                    ? 'bg-neon-blue/20 border-neon-blue/50 shadow-neon-pulse' 
+                    : 'bg-muted/20 border-muted/30 hover:border-neon-blue/30 hover:bg-neon-blue/10'
+                  }
+                  ${!isSelected && selectedPlanets.length >= 3 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:scale-105'}
+                  ${isMercury ? 'ring-2 ring-neon-orange/30' : ''}
+                `}
               >
-                <div 
-                  className="text-2xl font-bold group-hover:animate-float transition-all duration-300" 
-                  style={{ color: planet.color }}
-                >
-                  {planet.symbol}
+                {/* Planet Symbol */}
+                <div className="text-center mb-2">
+                  <div className={`
+                    text-2xl sm:text-3xl mb-1 transition-transform duration-300
+                    ${isSelected ? 'scale-110' : 'group-hover:scale-110'}
+                  `}>
+                    {planet.symbol}
+                  </div>
+                  
+                  {/* Selection Indicator */}
+                  {isSelected && (
+                    <div className="absolute top-2 right-2 w-3 h-3 bg-neon-blue rounded-full animate-pulse" />
+                  )}
                 </div>
-                <div className="text-xs font-medium text-center font-space">
-                  {planet.name}
+
+                {/* Planet Name */}
+                <div className="text-center">
+                  <h3 className={`
+                    font-semibold text-sm sm:text-base font-orbitron transition-colors duration-300
+                    ${isSelected ? 'text-neon-blue' : 'text-foreground group-hover:text-neon-blue'}
+                  `}>
+                    {planet.name}
+                  </h3>
+                  
+                  {/* Mercury Badge */}
+                  {isMercury && (
+                    <Badge className="badge-futuristic mt-1 text-xs border-neon-orange/30 text-neon-orange">
+                      Baseline
+                    </Badge>
+                  )}
                 </div>
-                {isSelected && (
-                  <Badge variant="secondary" className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center animate-scale-in">
-                    ✓
-                  </Badge>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-              </Button>
+
+                {/* Hover Effect */}
+                <div className={`
+                  absolute inset-0 rounded-xl transition-opacity duration-300
+                  ${isSelected ? 'opacity-20' : 'opacity-0 group-hover:opacity-10'}
+                  bg-gradient-to-br from-neon-blue to-neon-cyan
+                `} />
+              </button>
             );
           })}
         </div>
-        {selectedPlanets.length > 0 && (
-          <div className="mt-4 p-3 bg-muted/30 rounded-lg animate-slide-up border border-cosmic/20">
-            <p className="text-sm text-muted-foreground mb-2 font-space">Selected planets:</p>
-            <div className="flex flex-wrap gap-2">
-              {selectedPlanets.map((planetName, index) => {
-                const planet = planets.find(p => p.name === planetName);
-                return planet ? (
-                  <Badge key={planetName} variant="outline" className="border-stellar/40 hover-glow animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <span style={{ color: planet.color }} className="mr-1">{planet.symbol}</span>
-                    {planet.name}
+
+        {/* Selection Summary */}
+        <div className="mt-4 p-3 bg-muted/20 rounded-lg border border-neon-blue/20">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">
+              Selected: <span className="text-neon-blue font-semibold">{selectedPlanets.length}/3</span>
+            </span>
+            {selectedPlanets.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {selectedPlanets.map((planet) => (
+                  <Badge 
+                    key={planet} 
+                    className="badge-futuristic text-xs"
+                    onClick={() => onPlanetToggle(planet)}
+                  >
+                    {planet}
                   </Badge>
-                ) : null;
-              })}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
+          
+          {/* Mercury Recommendation */}
+          {!selectedPlanets.includes('Mercury') && selectedPlanets.length < 3 && (
+            <p className="text-xs text-neon-orange mt-2 font-space">
+              💡 Consider adding Mercury for baseline validation
+            </p>
+          )}
+          
+          {/* Reference Data Preset */}
+          <div className="mt-3 p-2 bg-neon-orange/10 rounded border border-neon-orange/20">
+            <p className="text-xs text-neon-orange font-space mb-2">
+              🎯 <strong>Reference Data Match:</strong> Select Mercury & Venus for 2013-2014 validation
+            </p>
+            <button
+              onClick={() => {
+                if (selectedPlanets.length === 0) {
+                  onPlanetToggle('Mercury');
+                  onPlanetToggle('Venus');
+                }
+              }}
+              disabled={selectedPlanets.length > 0}
+              className="px-2 py-1 text-xs font-medium rounded border border-neon-orange/30 text-neon-orange hover:bg-neon-orange/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+            >
+              Set Mercury + Venus
+            </button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );
-}
+};

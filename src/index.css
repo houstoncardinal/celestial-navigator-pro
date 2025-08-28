@@ -2,124 +2,110 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+/* Futuristic Space Theme Design System */
 @layer base {
   :root {
-    /* Deep Space Theme */
-    --background: 228 25% 6%;
+    /* Ultra-Modern Color Palette */
+    --background: 220 25% 3%;
     --foreground: 210 40% 98%;
 
-    --card: 228 25% 8%;
+    --card: 220 25% 5%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 228 25% 8%;
+    --popover: 220 25% 5%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 45 100% 70%;
-    --primary-foreground: 228 25% 6%;
+    --primary: 200 100% 70%;
+    --primary-foreground: 220 25% 3%;
 
-    --secondary: 259 47% 25%;
+    --secondary: 250 50% 25%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 228 25% 12%;
+    --muted: 220 25% 10%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 259 47% 35%;
+    --accent: 250 50% 35%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 228 25% 18%;
-    --input: 228 25% 12%;
-    --ring: 45 100% 70%;
+    --border: 220 25% 15%;
+    --input: 220 25% 10%;
+    --ring: 200 100% 70%;
 
-    /* Custom Space Theme Colors */
-    --cosmic-purple: 259 47% 35%;
-    --cosmic-blue: 234 89% 74%;
-    --stellar-gold: 45 100% 70%;
-    --nebula-violet: 275 100% 75%;
-    --deep-space: 228 25% 6%;
-    --starfield: 228 25% 4%;
+    /* Futuristic Theme Colors */
+    --neon-blue: 200 100% 70%;
+    --neon-cyan: 180 100% 70%;
+    --neon-purple: 280 100% 70%;
+    --neon-pink: 320 100% 70%;
+    --neon-green: 120 100% 70%;
+    --neon-orange: 30 100% 70%;
     
-    /* Gradients */
-    --gradient-cosmic: linear-gradient(135deg, hsl(var(--cosmic-purple)), hsl(var(--cosmic-blue)));
-    --gradient-nebula: linear-gradient(45deg, hsl(var(--deep-space)), hsl(var(--cosmic-purple)) 50%, hsl(var(--nebula-violet)));
-    --gradient-stellar: linear-gradient(90deg, hsl(var(--stellar-gold)), hsl(45 100% 80%));
+    /* Deep Space Gradients */
+    --gradient-deep: linear-gradient(135deg, hsl(220 25% 3%), hsl(250 50% 15%));
+    --gradient-neon: linear-gradient(135deg, hsl(200 100% 70%), hsl(180 100% 70%));
+    --gradient-cosmic: linear-gradient(45deg, hsl(220 25% 3%), hsl(280 100% 30%) 50%, hsl(320 100% 40%));
+    --gradient-stellar: linear-gradient(90deg, hsl(200 100% 70%), hsl(180 100% 80%));
     
-    /* Effects */
-    --glow-cosmic: 0 0 20px hsl(var(--cosmic-blue) / 0.3);
-    --glow-stellar: 0 0 30px hsl(var(--stellar-gold) / 0.4);
-    --shadow-space: 0 4px 20px hsl(var(--deep-space) / 0.8);
+    /* Futuristic Effects */
+    --glow-neon: 0 0 30px hsl(var(--neon-blue) / 0.6);
+    --glow-cyan: 0 0 25px hsl(var(--neon-cyan) / 0.5);
+    --glow-purple: 0 0 35px hsl(var(--neon-purple) / 0.4);
+    --shadow-futuristic: 0 8px 32px hsl(220 25% 3% / 0.8);
     
-    /* Animations */
-    --transition-cosmic: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* Advanced Animations */
+    --transition-futuristic: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-smooth: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Enhanced Sidebar */
+    --sidebar-background: 220 25% 5%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 220 25% 8%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 220 25% 10%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 220 25% 15%;
+    --sidebar-ring: 200 100% 70%;
   }
 
   .dark {
-    /* Enhanced Dark Space Theme */
-    --background: 228 25% 4%;
+    /* Enhanced Dark Futuristic Theme */
+    --background: 220 25% 2%;
     --foreground: 210 40% 98%;
 
-    --card: 228 25% 6%;
+    --card: 220 25% 4%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 228 25% 6%;
+    --popover: 220 25% 4%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 45 100% 75%;
-    --primary-foreground: 228 25% 4%;
+    --primary: 200 100% 75%;
+    --primary-foreground: 220 25% 2%;
 
-    --secondary: 259 47% 20%;
+    --secondary: 250 50% 20%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 228 25% 8%;
+    --muted: 220 25% 8%;
     --muted-foreground: 215 20% 70%;
 
-    --accent: 259 47% 30%;
+    --accent: 250 50% 30%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 228 25% 15%;
-    --input: 228 25% 8%;
-    --ring: 45 100% 75%;
+    --border: 220 25% 12%;
+    --input: 220 25% 8%;
+    --ring: 200 100% 75%;
 
-    --starfield: 228 25% 2%;
-    --glow-cosmic: 0 0 25px hsl(var(--cosmic-blue) / 0.4);
-    --glow-stellar: 0 0 35px hsl(var(--stellar-gold) / 0.5);
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --glow-neon: 0 0 35px hsl(var(--neon-blue) / 0.7);
+    --glow-cyan: 0 0 30px hsl(var(--neon-cyan) / 0.6);
+    --glow-purple: 0 0 40px hsl(var(--neon-purple) / 0.5);
+    --shadow-futuristic: 0 12px 40px hsl(220 25% 2% / 0.9);
   }
 }
 
@@ -130,41 +116,318 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground font-space antialiased;
+    background: radial-gradient(ellipse at top, hsl(220 25% 8%), hsl(220 25% 3%));
+    min-height: 100vh;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-orbitron;
   }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, hsl(var(--neon-blue)), hsl(var(--neon-cyan)));
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, hsl(var(--neon-cyan)), hsl(var(--neon-blue)));
+  }
 }
 
 @layer utilities {
+  /* Futuristic Text Effects */
+  .text-neon {
+    text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+  }
+  
   .text-glow {
-    text-shadow: 0 0 10px currentColor;
+    text-shadow: 0 0 15px currentColor;
   }
   
-  .hover-glow {
-    transition: all 0.3s ease;
+  .text-futuristic {
+    background: linear-gradient(135deg, hsl(var(--neon-blue)), hsl(var(--neon-cyan)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
-  .hover-glow:hover {
-    filter: drop-shadow(0 0 8px hsl(var(--stellar-gold) / 0.6));
+  /* Enhanced Hover Effects */
+  .hover-neon {
+    transition: var(--transition-futuristic);
   }
   
-  .glass-effect {
-    backdrop-filter: blur(12px);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .hover-neon:hover {
+    filter: drop-shadow(0 0 20px hsl(var(--neon-blue) / 0.8));
+    transform: translateY(-2px);
   }
   
-  .starfield-bg {
+  .hover-cyan {
+    transition: var(--transition-futuristic);
+  }
+  
+  .hover-cyan:hover {
+    filter: drop-shadow(0 0 20px hsl(var(--neon-cyan) / 0.8));
+    transform: translateY(-2px);
+  }
+  
+  /* Futuristic Glass Effects */
+  .glass-futuristic {
+    backdrop-filter: blur(20px);
+    background: linear-gradient(135deg, 
+      hsl(var(--card) / 0.8), 
+      hsl(var(--card) / 0.4)
+    );
+    border: 1px solid hsl(var(--border) / 0.3);
+    box-shadow: var(--shadow-futuristic);
+  }
+  
+  .glass-neon {
+    backdrop-filter: blur(20px);
+    background: linear-gradient(135deg, 
+      hsl(var(--neon-blue) / 0.1), 
+      hsl(var(--neon-cyan) / 0.05)
+    );
+    border: 1px solid hsl(var(--neon-blue) / 0.3);
+    box-shadow: 0 0 30px hsl(var(--neon-blue) / 0.2);
+  }
+  
+  /* Enhanced Starfield Background */
+  .starfield-futuristic {
     background-image: 
-      radial-gradient(2px 2px at 20px 30px, white, transparent),
-      radial-gradient(2px 2px at 40px 70px, white, transparent),
-      radial-gradient(1px 1px at 90px 40px, white, transparent),
-      radial-gradient(1px 1px at 130px 80px, white, transparent),
-      radial-gradient(2px 2px at 160px 30px, white, transparent);
+      radial-gradient(2px 2px at 20px 30px, hsl(var(--neon-blue) / 0.8), transparent),
+      radial-gradient(2px 2px at 40px 70px, hsl(var(--neon-cyan) / 0.6), transparent),
+      radial-gradient(1px 1px at 90px 40px, hsl(var(--neon-purple) / 0.7), transparent),
+      radial-gradient(1px 1px at 130px 80px, hsl(var(--neon-pink) / 0.5), transparent),
+      radial-gradient(2px 2px at 160px 30px, hsl(var(--neon-green) / 0.6), transparent),
+      radial-gradient(1px 1px at 200px 60px, hsl(var(--neon-orange) / 0.4), transparent);
     background-repeat: repeat;
-    background-size: 200px 100px;
-    animation: float 20s ease-in-out infinite;
+    background-size: 250px 150px;
+    animation: float-futuristic 25s ease-in-out infinite;
   }
+  
+  /* Futuristic Grid Pattern */
+  .grid-futuristic {
+    background-image: 
+      linear-gradient(hsl(var(--neon-blue) / 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--neon-blue) / 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: grid-move 20s linear infinite;
+  }
+  
+  /* Responsive Design Utilities */
+  .container-responsive {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .grid-responsive {
+    @apply grid gap-4 sm:gap-6 lg:gap-8;
+  }
+  
+  .text-responsive {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+  
+  .padding-responsive {
+    @apply p-4 sm:p-6 lg:p-8;
+  }
+  
+  .margin-responsive {
+    @apply m-4 sm:m-6 lg:m-8;
+  }
+  
+  /* Mobile-First Spacing */
+  .space-mobile {
+    @apply space-y-4 sm:space-y-6 lg:space-y-8;
+  }
+  
+  .gap-mobile {
+    @apply gap-4 sm:gap-6 lg:gap-8;
+  }
+  
+  /* Enhanced Button Styles */
+  .btn-futuristic {
+    @apply relative overflow-hidden rounded-lg font-orbitron font-semibold transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--neon-blue)), hsl(var(--neon-cyan)));
+    border: 1px solid hsl(var(--neon-blue) / 0.3);
+    box-shadow: 0 4px 15px hsl(var(--neon-blue) / 0.3);
+  }
+  
+  .btn-futuristic:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px hsl(var(--neon-blue) / 0.5);
+  }
+  
+  .btn-futuristic:active {
+    transform: translateY(0);
+  }
+  
+  /* Enhanced Card Styles */
+  .card-futuristic {
+    @apply rounded-xl border transition-all duration-300;
+    background: linear-gradient(135deg, 
+      hsl(var(--card) / 0.9), 
+      hsl(var(--card) / 0.7)
+    );
+    border: 1px solid hsl(var(--border) / 0.3);
+    box-shadow: var(--shadow-futuristic);
+  }
+  
+  .card-futuristic:hover {
+    border-color: hsl(var(--neon-blue) / 0.5);
+    box-shadow: 0 12px 40px hsl(var(--neon-blue) / 0.2);
+    transform: translateY(-4px);
+  }
+  
+  /* Enhanced Input Styles */
+  .input-futuristic {
+    @apply rounded-lg border transition-all duration-300;
+    background: hsl(var(--input) / 0.8);
+    border: 1px solid hsl(var(--border) / 0.3);
+    backdrop-filter: blur(10px);
+  }
+  
+  .input-futuristic:focus {
+    border-color: hsl(var(--neon-blue));
+    box-shadow: 0 0 20px hsl(var(--neon-blue) / 0.3);
+    outline: none;
+  }
+  
+  /* Enhanced Badge Styles */
+  .badge-futuristic {
+    @apply rounded-full px-3 py-1 text-xs font-semibold transition-all duration-300;
+    background: linear-gradient(135deg, hsl(var(--neon-blue) / 0.2), hsl(var(--neon-cyan) / 0.2));
+    border: 1px solid hsl(var(--neon-blue) / 0.3);
+    color: hsl(var(--neon-cyan));
+  }
+  
+  .badge-futuristic:hover {
+    background: linear-gradient(135deg, hsl(var(--neon-blue) / 0.3), hsl(var(--neon-cyan) / 0.3));
+    transform: scale(1.05);
+  }
+}
+
+/* Futuristic Animations */
+@keyframes float-futuristic {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(1deg); }
+  50% { transform: translateY(-5px) rotate(-1deg); }
+  75% { transform: translateY(-15px) rotate(0.5deg); }
+}
+
+@keyframes grid-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+@keyframes neon-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px hsl(var(--neon-blue) / 0.4);
+  }
+  50% { 
+    box-shadow: 0 0 40px hsl(var(--neon-blue) / 0.8), 0 0 60px hsl(var(--neon-blue) / 0.4);
+  }
+}
+
+@keyframes neon-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes neon-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes neon-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 20px hsl(var(--neon-blue) / 0.6));
+  }
+  50% { 
+    filter: drop-shadow(0 0 40px hsl(var(--neon-blue) / 1));
+  }
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 640px) {
+  .container-responsive {
+    @apply px-3;
+  }
+  
+  .text-responsive {
+    @apply text-sm;
+  }
+  
+  .padding-responsive {
+    @apply p-3;
+  }
+  
+  .margin-responsive {
+    @apply m-3;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-responsive {
+    @apply gap-4;
+  }
+  
+  .space-mobile {
+    @apply space-y-4;
+  }
+  
+  .gap-mobile {
+    @apply gap-4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    @apply px-8;
+  }
+  
+  .text-responsive {
+    @apply text-lg;
+  }
+  
+  .padding-responsive {
+    @apply p-8;
+  }
+  
+  .margin-responsive {
+    @apply m-8;
+  }
+}
+
+/* Enhanced Focus States for Accessibility */
+*:focus-visible {
+  outline: 2px solid hsl(var(--neon-blue));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced Selection */
+::selection {
+  background: hsl(var(--neon-blue) / 0.3);
+  color: hsl(var(--neon-cyan));
+}
+
+::-moz-selection {
+  background: hsl(var(--neon-blue) / 0.3);
+  color: hsl(var(--neon-cyan));
 }
